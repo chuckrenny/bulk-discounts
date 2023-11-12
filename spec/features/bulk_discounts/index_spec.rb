@@ -38,4 +38,17 @@ RSpec.describe "BulkDiscount Index", type: :feature do
 
     expect(current_path).to eq(new_bulk_discount_path)
   end
+
+  #Bulk US-3
+  it "displays a button to delete the discount" do
+    visit bulk_discounts_path
+
+    within("#bulk-#{@bulk1.id}") do
+      expect(page).to have_link("Remove Discount ID##{@bulk1.id}")
+      click_link("Remove Discount ID##{@bulk1.id}")
+      expect(current_path).to eq(bulk_discounts_path)
+    end
+
+    expect(page).to_not have_link("Remove Discount ID##{@bulk1.id}")
+  end
 end

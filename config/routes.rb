@@ -30,5 +30,5 @@ Rails.application.routes.draw do
   end
 
   # Bulk Discounts
-  resources :bulk_discounts, only: [:index, :show, :new, :create]
+  resources :bulk_discounts, only: [:index, :show, :new, :create, :destroy]
 end
