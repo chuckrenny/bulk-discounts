@@ -12,21 +12,23 @@ Rails.application.routes.draw do
     end
     
     resources :invoices, controller: "merchants/invoices", only: [:show, :index, :update]
-  end
 
+  end
+  
   namespace :merchants do
     resources :invoices, only: [:index, :update]
     resources :items, only: :show
   end
   
   root "merchants#index"
-
+  
   namespace :admin do
     get "/", to: "dashboards#welcome"
-
+    
     resources :invoices, only: [:index, :show, :update]
     resources :merchants, only: [:index, :show, :edit, :update, :new, :create]
   end
 
-  resources :photos, only: [:index]
+  # Bulk Discounts
+  resources :bulk_discounts, only: [:index, :show, :new, :create]
 end
