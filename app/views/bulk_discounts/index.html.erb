@@ -6,5 +6,6 @@
     <p>Percentage Off: <%= discount.percentage_off %></p>
     <p>Quantity Threshold: <%= discount.threshold %></p>
     <p><%= link_to "Bulk ID-#{discount.id} Show Page", bulk_discount_path(discount.id)%></p>
+    <p><%= link_to "Remove Discount ID##{discount.id}", bulk_discount_path(discount.id), method: :delete %></p>
   </section>
 <% end %>
