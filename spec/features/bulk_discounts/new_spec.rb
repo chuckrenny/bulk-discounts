@@ -13,8 +13,8 @@ RSpec.describe "BulkDiscount Index", type: :feature do
     expect(page).to have_content("Add a New Discount")
 
     select(@merchant1.name, from: 'Merchant')
-    fill_in :percentage_off, with: 10
-    fill_in :threshold, with: 5
+    fill_in 'Percentage off', with: 10
+    fill_in 'Threshold', with: 5
 
     click_on 'Create New Discount'
 

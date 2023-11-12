@@ -1,5 +1,5 @@
 <h1>Add a New Discount</h1>
-<%= form_with url: bulk_discounts_path, method: :post, data: { turbo: false } do |form| %>
+<%= form_with model: @bulk_discount, url: bulk_discounts_path, method: :post, data: { turbo: false } do |form| %>
   <%= form.label :merchant_id, 'Select Merchant' %>
   <%= form.collection_select :merchant_id, @merchants, :id, :name, prompt: 'Choose a Merchant' %>
 
