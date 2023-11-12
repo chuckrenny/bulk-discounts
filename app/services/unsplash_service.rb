@@ -10,7 +10,7 @@ class UnsplashService
     result = JSON.parse(response.body)  
     # require 'pry';binding.pry
 
-    photo_url = result[0]["urls"]["regular"]
+    photo_url = result[0]["urls"]["small"]
     # require 'pry';binding.pry
   end
 end
