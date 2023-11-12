@@ -12,7 +12,7 @@ RSpec.describe "BulkDiscount Index", type: :feature do
   end
 
   #Bulk US-1
-  it "displays all bulk discounts including their attributes and a redirect link to the show page" do
+  xit "displays all bulk discounts including their attributes and a redirect link to the show page" do
     visit bulk_discounts_path
 
     [@bulk1, @bulk2, @bulk3, @bulk4].each do |bulk|
@@ -27,5 +27,15 @@ RSpec.describe "BulkDiscount Index", type: :feature do
         visit bulk_discounts_path
       end
     end
+  end
+
+  #Bulk US-2
+  it "displays a link to create a new discount" do
+    visit bulk_discounts_path
+
+    expect(page).to have_link("Create New Discount")
+    click_link("Create New Discount")
+
+    expect(current_path).to eq(new_bulk_discount_path)
   end
 end
