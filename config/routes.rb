@@ -28,5 +28,6 @@ Rails.application.routes.draw do
     resources :merchants, only: [:index, :show, :edit, :update, :new, :create]
   end
 
-  resources :photos, only: [:index]
+  # Bulk Discounts
+  resources :bulk_discounts, only: [:index, :show]
 end
