@@ -12,4 +12,11 @@ class InvoiceItem < ApplicationRecord
     .select('id', 'invoices.id as invoice_id', 'invoice_items.status', 'invoices.created_at')
     .order('invoices.created_at ASC')
   end
+
+  def applicable_discount
+    item.merchant.bulk_discounts
+        .where("bulk_discounts.threshold <= ?", quantity)
+        .order(percentage_off: :desc)
+        .first
+  end
 end

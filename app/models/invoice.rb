@@ -17,9 +17,11 @@ class Invoice < ApplicationRecord
   end
 
   def total_revenue_after_discounts
-    self.total_revenue - self.invoice_items.joins(item: {merchant: :bulk_discounts})
-    .where("invoice_items.quantity >= bulk_discounts.threshold")
-    .select('invoice_items.*', 'bulk_discounts.percentage_off', 'bulk_discounts.threshold')
-    .sum("invoice_items.quantity * (invoice_items.unit_price * bulk_discounts.percentage_off/100.0)") 
+    # require 'pry';binding.pry
+    self.total_revenue - invoice_items.joins(item: { merchant: :bulk_discounts })
+    .where('invoice_items.quantity >= bulk_discounts.threshold')
+    .group('invoice_items.id')
+    .pluck(Arel.sql('MAX(bulk_discounts.percentage_off) * invoice_items.unit_price * (invoice_items.quantity / 100.0)'))
+    .sum
   end
 end

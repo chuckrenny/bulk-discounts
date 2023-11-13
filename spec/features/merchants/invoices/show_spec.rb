@@ -42,45 +42,62 @@ RSpec.describe "merchant invoice show page" do
   # end
 
   before :each do
+    # @merchant1 = create(:merchant, enabled: true)
+    # @merchant2 = create(:merchant, enabled: true)
+    # @merchant3 = create(:merchant, enabled: true)
+    # @merchant4 = create(:merchant)
+    # @merchant5 = create(:merchant)
+
+    # @customer1 = create(:customer)
+    # @customer2 = create(:customer)
+    # @customer3 = create(:customer)
+    # @customer4 = create(:customer)
+    # @customer5 = create(:customer)
+
+    # @invoice1 = create(:invoice, customer: @customer1, created_at: "2023-11-07 00:04:06.477179000 +0000")
+    # @invoice2 = create(:invoice, customer: @customer2, created_at: "2020-10-02 00:04:06.477179000 +0000")
+    # @invoice3 = create(:invoice, customer: @customer3)
+    # @invoice4 = create(:invoice, customer: @customer4)
+    # @invoice5 = create(:invoice, customer: @customer5)
+
+    # @item1 = create(:item, merchant: @merchant1)
+    # @item2 = create(:item, merchant: @merchant2)
+    # @item3 = create(:item, merchant: @merchant3)
+    # @item4 = create(:item, merchant: @merchant4)
+    # @item5 = create(:item, merchant: @merchant5)
+
+    # # Create invoice items with unit prices and quantities associated with invoices
+    # @invoice_item1 = create(:invoice_item, item: @item1, invoice: @invoice1, unit_price: 10, quantity: 5)
+    # @invoice_item2 = create(:invoice_item, item: @item2, invoice: @invoice2, unit_price: 15, quantity: 3)
+    # @invoice_item3 = create(:invoice_item, item: @item3, invoice: @invoice3, unit_price: 8, quantity: 5)
+    # @invoice_item4 = create(:invoice_item, item: @item4, invoice: @invoice4, unit_price: 9, quantity: 4)
+    # @invoice_item5 = create(:invoice_item, item: @item5, invoice: @invoice5, unit_price: 9, quantity: 2)
+
+    # # Create successful transactions for invoices
+    # @transaction1 = create(:transaction, invoice: @invoice1, result: 0) # Successful
+    # @transaction2 = create(:transaction, invoice: @invoice2, result: 0) # Successful
+    # @transaction3 = create(:transaction, invoice: @invoice3, result: 0) # Successful
+    # @transaction4 = create(:transaction, invoice: @invoice4, result: 0) # Successful
+    # @transaction5 = create(:transaction, invoice: @invoice5, result: 0) # Successful
+
+    # @bulk1 = create(:bulk_discount, percentage_off: 10, threshold: 5, merchant: @merchant1)
+
     @merchant1 = create(:merchant, enabled: true)
-    @merchant2 = create(:merchant, enabled: true)
-    @merchant3 = create(:merchant, enabled: true)
-    @merchant4 = create(:merchant)
-    @merchant5 = create(:merchant)
-
-    @customer1 = create(:customer)
-    @customer2 = create(:customer)
-    @customer3 = create(:customer)
-    @customer4 = create(:customer)
-    @customer5 = create(:customer)
-
-    @invoice1 = create(:invoice, customer: @customer1, created_at: "2023-11-07 00:04:06.477179000 +0000")
-    @invoice2 = create(:invoice, customer: @customer2, created_at: "2020-10-02 00:04:06.477179000 +0000")
-    @invoice3 = create(:invoice, customer: @customer3)
-    @invoice4 = create(:invoice, customer: @customer4)
-    @invoice5 = create(:invoice, customer: @customer5)
 
     @item1 = create(:item, merchant: @merchant1)
-    @item2 = create(:item, merchant: @merchant2)
-    @item3 = create(:item, merchant: @merchant3)
-    @item4 = create(:item, merchant: @merchant4)
-    @item5 = create(:item, merchant: @merchant5)
+    @item2 = create(:item, merchant: @merchant1)
+    @item3 = create(:item, merchant: @merchant1)
 
-    # Create invoice items with unit prices and quantities associated with invoices
+    @customer1 = create(:customer)
+
+    @invoice1 = create(:invoice, customer: @customer1)
+
     @invoice_item1 = create(:invoice_item, item: @item1, invoice: @invoice1, unit_price: 10, quantity: 5)
-    @invoice_item2 = create(:invoice_item, item: @item2, invoice: @invoice2, unit_price: 15, quantity: 3)
-    @invoice_item3 = create(:invoice_item, item: @item3, invoice: @invoice3, unit_price: 8, quantity: 5)
-    @invoice_item4 = create(:invoice_item, item: @item4, invoice: @invoice4, unit_price: 9, quantity: 4)
-    @invoice_item5 = create(:invoice_item, item: @item5, invoice: @invoice5, unit_price: 9, quantity: 2)
-
-    # Create successful transactions for invoices
-    @transaction1 = create(:transaction, invoice: @invoice1, result: 0) # Successful
-    @transaction2 = create(:transaction, invoice: @invoice2, result: 0) # Successful
-    @transaction3 = create(:transaction, invoice: @invoice3, result: 0) # Successful
-    @transaction4 = create(:transaction, invoice: @invoice4, result: 0) # Successful
-    @transaction5 = create(:transaction, invoice: @invoice5, result: 0) # Successful
+    @invoice_item1 = create(:invoice_item, item: @item2, invoice: @invoice1, unit_price: 5, quantity: 1)
+    @invoice_item1 = create(:invoice_item, item: @item3, invoice: @invoice1, unit_price: 15, quantity: 10)
 
     @bulk1 = create(:bulk_discount, percentage_off: 10, threshold: 5, merchant: @merchant1)
+    @bulk2 = create(:bulk_discount, percentage_off: 20, threshold: 10, merchant: @merchant1)
   end
 
   #US 15
@@ -128,20 +145,32 @@ RSpec.describe "merchant invoice show page" do
       expect(current_path).to eq("/merchants/#{@merchant_1.id}/invoices/#{@invoice_1.id}")
     end
   end
-
   
   #Bulk US-6
   describe "Merchant Invoice Show Page: Total and Discounted Revenue" do
     it "displays total revenue for merchant from the invoice before discounts" do
       visit merchant_invoice_path(@merchant1, @invoice1) 
 
-      expect(page).to have_content("Total revenue: $50.00")
+      expect(page).to have_content("Total revenue: $205.00")
     end
 
     it "displays the discounted revenue from the merchant invoice with the bulk discounts included" do
       visit merchant_invoice_path(@merchant1, @invoice1) 
 
-      expect(page).to have_content("Total Revenue after Discounts: $45.00")
+      expect(page).to have_content("Total Revenue after Discounts(if applicable): $170.00")
+    end
+  end
+
+  #Bulk US-7
+  describe "Merchant Invoice Show Page: Link to Applied Discounts" do
+    it "displays a link to the bulk discount show page if a discount was applied" do
+      visit merchant_invoice_path(@merchant1, @invoice1)
+
+      within("#item_status") do
+        expect(page).to have_link("Discount Show Page")
+        click_link("Discount Show Page")
+        expect(current_path).to eq(bulk_discount_path(@bulk1))
+      end
     end
   end
 end
