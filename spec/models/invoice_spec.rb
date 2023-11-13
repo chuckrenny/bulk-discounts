@@ -33,5 +33,20 @@ RSpec.describe Invoice, type: :model do
         expect(@invoice1.total_revenue).to eq(800)
       end
     end
+
+    #Bulk US-6
+    describe "#total_revenue_after_discounts" do
+      it "can find the total revenue after applicable discounts" do
+        @merchant1 = create(:merchant, enabled: true)
+        @customer1 = create(:customer)
+        @invoice1 = create(:invoice, customer: @customer1)
+        @item1 = create(:item, merchant: @merchant1)
+        @invoice_item1 = create(:invoice_item, item: @item1, invoice: @invoice1, unit_price: 10, quantity: 5)
+        @bulk1 = create(:bulk_discount, percentage_off: 10, threshold: 5, merchant: @merchant1)
+
+        expect(@invoice1.total_revenue).to eq(50)
+        expect(@invoice1.total_revenue_after_discounts).to eq(45)
+      end
+    end
   end
 end
