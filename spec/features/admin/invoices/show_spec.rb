@@ -2,19 +2,35 @@ require "rails_helper"
 
 RSpec.describe "Admin Invoices Index Page" do
   before :each do
-    @customer = create(:customer)
-    @invoice1 = create(:invoice, customer: @customer, status: 0)
+    # @customer = create(:customer)
+    # @invoice1 = create(:invoice, customer: @customer, status: 0)
     
     # Create first item and associated invoice item
-    @item1 = create(:item) 
-    @invoice_item1 = create(:invoice_item, invoice: @invoice1, item: @item1)
+    # @item1 = create(:item) 
+    # @invoice_item1 = create(:invoice_item, invoice: @invoice1, item: @item1)
     
     # Create second item and associated invoice item
-    @item2 = create(:item) 
-    @invoice_item2 = create(:invoice_item, invoice: @invoice1, item: @item2)
+    # @item2 = create(:item) 
+    # @invoice_item2 = create(:invoice_item, invoice: @invoice1, item: @item2)
 
     # Create a transaction for the invoice
-    create(:transaction, invoice: @invoice1) 
+    # create(:transaction, invoice: @invoice1) 
+    @merchant1 = create(:merchant, enabled: true)
+
+    @item1 = create(:item, merchant: @merchant1)
+    @item2 = create(:item, merchant: @merchant1)
+    @item3 = create(:item, merchant: @merchant1)
+
+    @customer1 = create(:customer)
+
+    @invoice1 = create(:invoice, customer: @customer1)
+
+    @invoice_item1 = create(:invoice_item, item: @item1, invoice: @invoice1, unit_price: 10, quantity: 5)
+    @invoice_item1 = create(:invoice_item, item: @item2, invoice: @invoice1, unit_price: 5, quantity: 1)
+    @invoice_item1 = create(:invoice_item, item: @item3, invoice: @invoice1, unit_price: 15, quantity: 10)
+
+    @bulk1 = create(:bulk_discount, percentage_off: 10, threshold: 5, merchant: @merchant1)
+    @bulk2 = create(:bulk_discount, percentage_off: 20, threshold: 10, merchant: @merchant1)
   end
 
   # US 33
@@ -60,5 +76,20 @@ RSpec.describe "Admin Invoices Index Page" do
     @invoice1.reload
 
     expect(@invoice1.status).to eq("completed")
+  end
+
+  #Bulk US-8
+  describe "Admin Invoice Show Page: Total and Discounted Revenue" do
+    it "displays total revenue for admin from the invoice before discounts" do
+      visit admin_invoice_path(@invoice1) 
+
+      expect(page).to have_content("Total revenue: $205.00")
+    end
+
+    it "displays the discounted revenue from the admin invoice with the bulk discounts included" do
+      visit admin_invoice_path(@invoice1) 
+
+      expect(page).to have_content("Total Revenue after Discounts(if applicable): $170.00")
+    end
   end
 end 
